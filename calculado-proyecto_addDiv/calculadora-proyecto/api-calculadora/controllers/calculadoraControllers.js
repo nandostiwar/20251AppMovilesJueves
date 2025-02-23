@@ -1,4 +1,4 @@
-const {add, subtract, multiply} = require('../operaciones/operaciones.js');
+const {add, subtract, multiply,divide} = require('../operaciones/operaciones.js');
 
 function sumar(req, res){
     const {body} = req;
@@ -26,12 +26,6 @@ function multiplicar(req, res){
         resultado: result
     })
 }
-
-module.exports = {
-    sumar,
-    restar,
-    multiplicar
-
 
 function dividir(req, res){
     const { body } = req;

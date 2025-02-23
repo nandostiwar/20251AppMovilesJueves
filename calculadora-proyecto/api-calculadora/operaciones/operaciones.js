@@ -26,6 +26,9 @@ function multiply(a, b){
 function divide(a, b){
     let number1 = parseInt(a);
     let number2 = parseInt(b);
+    if (number2 === 0) {
+        return "No se puede dividir por cero";
+    }
     return number1 / number2;
 }
 

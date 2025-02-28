@@ -8,4 +8,5 @@ const operacionSchema = new mongoose.Schema({
   fecha: { type: Date, default: Date.now }
 });
 
+// Exportación corregida: Asegúrate de que el nombre coincida al importarlo.
 module.exports = mongoose.model('Operacion', operacionSchema);

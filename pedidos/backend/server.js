@@ -1,29 +1,19 @@
-const express = require("express");
-const cors = require("cors");
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 
 const app = express();
-app.use(cors()); // Permitir peticiones del frontend
-app.use(express.json()); // Permitir JSON en las solicitudes
+app.use(express.json());
+app.use(cors());
 
-let pedidos = []; // Lista temporal de pedidos
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => console.log('MongoDB conectado'))
+  .catch(err => console.error('Error en la conexión a MongoDB', err));
 
-// Ruta para obtener los pedidos
-app.get("/pedidos", (req, res) => {
-    res.json(pedidos);
-});
+app.use('/api', require('./routes/ventas'));
 
-// Ruta para agregar un pedido
-app.post("/pedidos", (req, res) => {
-    const { texto } = req.body;
-    if (!texto) {
-        return res.status(400).json({ error: "El pedido no puede estar vacío" });
-    }
-    const nuevoPedido = { id: Date.now(), texto };
-    pedidos.push(nuevoPedido);
-    res.status(201).json(nuevoPedido);
-});
-
-// Iniciar el servidor
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Servidor corriendo en el puerto ${PORT}`));
-
+app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));

@@ -9,7 +9,7 @@ const io = new Server(server, {
     cors: {
         origin: [
             "https://1mb0kp0g-3000.use.devtunnels.ms", // Frontend
-            "https://1mb0kp0g-5000.use.devtunnels.ms"  // Backend (opcional)
+            "https://1mb0kp0g-5000.use.devtunnels.ms"  // Backend 
         ],
         methods: ["GET", "POST"]
     }

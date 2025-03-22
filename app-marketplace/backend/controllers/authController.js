@@ -1,33 +1,73 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-exports.register = async (req, res) => {
-    const { correo, password, role } = req.body;
-    
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ correo, password: hashedPassword, role });
-        await newUser.save();
-        res.status(201).json({ message: "Usuario registrado" });
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+const generateToken = (id, role) => {
+    return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-exports.login = async (req, res) => {
-    const { correo, password } = req.body;
-
+export const register = async (req, res) => {
     try {
-        const user = await User.findOne({ correo });
-        if (!user) return res.status(400).json({ error: "Usuario no encontrado" });
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ error: "Contraseña incorrecta" });
-
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token, role: user.role });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+      const { correo, password, role } = req.body; // ✅ Cambiar 'email' por 'correo'
+  
+      // Verifica si se recibió un password válido
+      if (!password) {
+        return res.status(400).json({ message: 'La contraseña es obligatoria' });
+      }
+  
+      // Verifica si el usuario ya existe
+      const userExists = await User.findOne({ correo }); // ✅ Buscar por 'correo'
+      if (userExists) {
+        return res.status(400).json({ message: 'El usuario ya está registrado' });
+      }
+  
+      // ✅ Asegura que se envíe el rol (si no, asigna 'user' por defecto)
+      const userRole = role || 'user';
+  
+      // Hashear la contraseña
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      // Crea el usuario
+      const user = await User.create({
+        correo, // ✅ Guardar 'correo' en la base de datos
+        password: hashedPassword,
+        role: userRole
+      });
+  
+      res.status(201).json({ message: 'Usuario registrado con éxito', user });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al registrar usuario', error });
     }
-};
+  };
+  
+
+  export const login = async (req, res) => {
+    try {
+      const { correo, password } = req.body;
+  
+      // Buscar usuario por correo
+      const user = await User.findOne({ correo });
+  
+      // Si el usuario no existe
+      if (!user) {
+        return res.status(401).json({ message: "Usuario no encontrado" });
+      }
+  
+      // Comparar contraseñas
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ message: "Contraseña incorrecta" });
+      }
+  
+      // Generar token
+      const token = generateToken(user.id, user.role);
+  
+      res.json({ token, role: user.role });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error en el servidor", error });
+    }
+  };
+  
+  

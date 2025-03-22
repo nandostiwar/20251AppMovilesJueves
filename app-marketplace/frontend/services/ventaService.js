@@ -10,11 +10,14 @@ const getMisCompras = async () => {
     return res.data;
 };
 
-const nuevaCompra = async (producto, valor) => {
+// Actualización para incluir todos los datos de compra
+const nuevaCompra = async (datosCompra) => {
+    console.log("Enviando al backend:", datosCompra);
     const token = localStorage.getItem('token');
-    return axios.post(`${API_URL}/nueva`, { producto, valor }, {
+    const response = await axios.post(`${API_URL}/nueva`, datosCompra, {
         headers: { Authorization: `Bearer ${token}` }
     });
+    return response.data;
 };
 
 const getTodasLasCompras = async () => {
@@ -25,12 +28,54 @@ const getTodasLasCompras = async () => {
     return res.data;
 };
 
-const actualizarEstadoCompra = async (id, estado) => {
-    const token = localStorage.getItem('token');
-    return axios.put(`${API_URL}/${id}`, { estado }, {
-        headers: { Authorization: `Bearer ${token}` }
-    });
+// Función para validar estados
+const validarEstado = (estado) => {
+    const estadosValidos = ['completada', 'declinada'];
+    if (!estadosValidos.includes(estado)) {
+        console.warn(`Estado no válido: ${estado}. Usando 'declinada' por defecto.`);
+        return 'declinada';
+    }
+    return estado;
 };
 
-const ventaService = { getMisCompras, nuevaCompra, getTodasLasCompras, actualizarEstadoCompra };
+const actualizarEstadoCompra = async (id, estado) => {
+    const token = localStorage.getItem('token');
+    const estadoValidado = validarEstado(estado);
+    
+    console.log(`Actualizando compra ${id} a estado ${estadoValidado}`);
+    
+    const response = await axios.put(`${API_URL}/${id}`, { estado: estadoValidado }, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    
+    return response.data;
+};
+
+// Función para obtener estadísticas de compras
+const obtenerEstadisticas = (compras) => {
+    const total = compras.length;
+    const completadas = compras.filter(c => c.estado === 'completada').length;
+    const declinadas = compras.filter(c => c.estado === 'declinada').length;
+    
+    const valorTotal = compras
+        .filter(c => c.estado === 'completada')
+        .reduce((sum, c) => sum + Number(c.valor), 0);
+    
+    return {
+        total,
+        completadas,
+        declinadas,
+        valorTotal
+    };
+};
+
+const ventaService = { 
+    getMisCompras, 
+    nuevaCompra, 
+    getTodasLasCompras, 
+    actualizarEstadoCompra,
+    obtenerEstadisticas,
+    validarEstado
+};
+
 export default ventaService;

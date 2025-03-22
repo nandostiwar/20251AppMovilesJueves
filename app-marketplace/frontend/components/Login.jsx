@@ -1,46 +1,66 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import authService from "../services/authService";
 
 const Login = () => {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await authService.login(correo, password);
-      window.location.href = "/dashboard";
+        const data = await authService.login(correo, password);
+        console.log("Login exitoso:", data);
+        
+        // Redirigir según el rol del usuario
+        if (data.role === 'admin') {
+            navigate("/dashboard-admin");
+        } else {
+            navigate("/dashboard-user");
+        }
     } catch (error) {
-      alert("Error al iniciar sesión");
+        alert(error.response?.data?.message || "Error al iniciar sesión");
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-700">Iniciar Sesión</h2>
-        <form onSubmit={handleLogin} className="mt-4">
+    <div className="container">
+      <div className="card">
+        <h2 className="title">Iniciar Sesión</h2>
+        <form onSubmit={handleLogin} className="space-y-4">
           <input
             type="email"
-            placeholder="Correo"
-            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Correo electrónico"
             value={correo}
             onChange={(e) => setCorreo(e.target.value)}
+            className="input"
           />
           <input
             type="password"
             placeholder="Contraseña"
-            className="w-full p-2 mt-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="input"
           />
-          <button
-            type="submit"
-            className="w-full mt-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition"
-          >
+          <button type="submit" className="button button-blue">
             Iniciar Sesión
           </button>
         </form>
+        <div className="mt-4 space-y-2">
+          <button
+            onClick={() => navigate("/register-user")}
+            className="button button-green"
+          >
+            Registrarse como Usuario
+          </button>
+          <button
+            onClick={() => navigate("/register-admin")}
+            className="button button-red"
+          >
+            Registrarse como Administrador
+          </button>
+        </div>
       </div>
     </div>
   );

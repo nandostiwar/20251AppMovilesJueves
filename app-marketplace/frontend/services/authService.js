@@ -11,13 +11,21 @@ const registerAdmin = async (correo, password) => {
 };
 
 const login = async (correo, password) => {
-    const res = await axios.post(`${API_URL}/login`, { correo, password });
-    if (res.data.token) {
-        localStorage.setItem('token', res.data.token);
-        localStorage.setItem('role', res.data.role);
+    try {
+        const res = await axios.post(`${API_URL}/login`, { correo, password });
+
+        if (res.data.token) {
+            localStorage.setItem("token", res.data.token);
+            localStorage.setItem("role", res.data.role);
+        }
+
+        return res.data;
+    } catch (error) {
+        console.error("Error en login:", error.response?.data || error.message);
+        throw error;
     }
-    return res.data;
 };
+
 
 const logout = () => {
     localStorage.removeItem('token');

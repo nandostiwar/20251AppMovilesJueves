@@ -17,11 +17,28 @@ const RegisterAdmin = () => {
     };
 
     return (
-        <div>
-            <h2>Registro de Administrador</h2>
-            <input type="email" placeholder="Correo" onChange={(e) => setCorreo(e.target.value)} />
-            <input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} />
-            <button onClick={handleRegister}>Registrarse</button>
+        <div className="container">
+            <div className="card">
+                <h2 className="title">Registro de Administrador</h2>
+                <input 
+                    type="email" 
+                    placeholder="Correo" 
+                    onChange={(e) => setCorreo(e.target.value)} 
+                    className="input"
+                />
+                <input 
+                    type="password" 
+                    placeholder="Contraseña" 
+                    onChange={(e) => setPassword(e.target.value)} 
+                    className="input"
+                />
+                <button 
+                    onClick={handleRegister} 
+                    className="button button-red"
+                >
+                    Registrarse
+                </button>
+            </div>
         </div>
     );
 };

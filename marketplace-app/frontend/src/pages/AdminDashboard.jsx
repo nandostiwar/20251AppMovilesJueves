@@ -35,7 +35,9 @@ function AdminDashboard() {
   };
 
   const getTotalSales = () => {
-    return sales.reduce((total, sale) => total + Number(sale.amount), 0);
+    return sales
+      .filter(sale => sale.status === 'accepted')
+      .reduce((total, sale) => total + Number(sale.amount), 0);
   };
 
   const getAcceptedSales = () => {

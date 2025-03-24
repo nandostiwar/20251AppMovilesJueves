@@ -1,0 +1,45 @@
+const express = require('express');
+const router = express.Router();
+const User = require('../models/User');
+
+// Register admin
+router.post('/admin/register', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = new User({ email, password, role: 'admin' });
+    await user.save();
+    res.status(201).json({ message: 'Admin registered successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Register user
+router.post('/register', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = new User({ email, password, role: 'user' });
+    await user.save();
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Login
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+module.exports = router;

@@ -61,7 +61,7 @@ function UserDashboard() {
               className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900"
             >
               <FaSignOutAlt className="mr-2" />
-              Logout
+              Cerrar Sesión
             </button>
           </div>
         </div>
@@ -73,29 +73,29 @@ function UserDashboard() {
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center mb-4">
               <FaDollarSign className="h-6 w-6 text-blue-600 mr-2" />
-              <h2 className="text-xl font-semibold">New Purchase</h2>
+              <h2 className="text-xl font-semibold">Nueva Compra</h2>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Product Name</label>
+                <label className="block text-sm font-medium text-gray-700">Nombre del Producto</label>
                 <input
                   type="text"
                   name="productName"
                   value={product.productName}
                   onChange={handleChange}
                   className="form-input mt-1"
-                  placeholder="Enter product name"
+                  placeholder="Ingrese el nombre del producto"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Amount</label>
+                <label className="block text-sm font-medium text-gray-700">Valor</label>
                 <input
                   type="number"
                   name="amount"
                   value={product.amount}
                   onChange={handleChange}
                   className="form-input mt-1"
-                  placeholder="Enter amount"
+                  placeholder="Ingrese el valor"
                 />
               </div>
               <button 
@@ -103,7 +103,7 @@ function UserDashboard() {
                 className="btn btn-primary w-full flex items-center justify-center"
               >
                 <FaShoppingCart className="mr-2" />
-                Proceed to Payment
+                Seguir con el pago
               </button>
             </div>
           </div>
@@ -112,23 +112,23 @@ function UserDashboard() {
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center mb-4">
               <FaHistory className="h-6 w-6 text-blue-600 mr-2" />
-              <h2 className="text-xl font-semibold">Purchase History</h2>
+              <h2 className="text-xl font-semibold">Historial de Compras</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead>
                   <tr>
                     <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
+                      Fecha
                     </th>
                     <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Product
+                      Producto
                     </th>
                     <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amount
+                      Valor
                     </th>
                     <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
+                      Estado
                     </th>
                   </tr>
                 </thead>

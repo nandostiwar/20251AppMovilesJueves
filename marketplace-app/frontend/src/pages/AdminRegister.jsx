@@ -40,7 +40,7 @@ function AdminRegister() {
           className="flex items-center text-gray-600 hover:text-gray-900"
         >
           <FaArrowLeft className="mr-2" />
-          Back to Login
+          Regresar al Login
         </button>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
@@ -48,10 +48,10 @@ function AdminRegister() {
             <FaUserShield className="h-12 w-12 text-blue-600" />
           </div>
           <h2 className="mt-2 text-center text-3xl font-extrabold text-gray-900">
-            Create Admin Account
+            Crear Cuenta de Administrador
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Register as an administrator
+            Registrarse como administrador
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
@@ -64,7 +64,7 @@ function AdminRegister() {
                 onChange={handleChange}
                 required
                 className="form-input pl-10"
-                placeholder="Email address"
+                placeholder="Correo electrónico"
               />
             </div>
 
@@ -77,7 +77,7 @@ function AdminRegister() {
                 onChange={handleChange}
                 required
                 className="form-input pl-10"
-                placeholder="Password"
+                placeholder="Contraseña"
               />
             </div>
 
@@ -91,7 +91,7 @@ function AdminRegister() {
               {loading ? (
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
               ) : (
-                'Create Account'
+                'Crear Cuenta'
               )}
             </button>
           </form>

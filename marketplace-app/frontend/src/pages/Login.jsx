@@ -39,10 +39,10 @@ function Login() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Welcome to Our Marketplace
+            Bienvenido a Nuestro Marketplace
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Please sign in to your account
+            Por favor inicia sesión o regístrese para acceder a nuestro sitio.
           </p>
         </div>
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
@@ -56,7 +56,7 @@ function Login() {
                 onChange={handleChange}
                 required
                 className="form-input pl-10"
-                placeholder="Email address"
+                placeholder="Correo Electrónico"
               />
             </div>
             <div className="relative mt-4">
@@ -68,14 +68,14 @@ function Login() {
                 onChange={handleChange}
                 required
                 className="form-input pl-10"
-                placeholder="Password"
+                placeholder="Contraseña"
               />
             </div>
           </div>
 
           <div>
             <button type="submit" className="btn btn-primary w-full">
-              Sign in
+              Iniciar Sesión
             </button>
           </div>
         </form>
@@ -86,14 +86,14 @@ function Login() {
             className="btn btn-secondary flex items-center justify-center"
           >
             <FaUserPlus className="mr-2" />
-            Register as Admin
+            Registrarse como Administrador
           </button>
           <button 
             onClick={() => navigate('/register/user')} 
             className="btn btn-secondary flex items-center justify-center"
           >
             <FaUserPlus className="mr-2" />
-            Register as User
+            Registrarse como Usuario
           </button>
         </div>
       </div>

@@ -5,18 +5,24 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('user'); // Estado para el rol
     const navigate = useNavigate();
 
     const handleLogin = async () => {
         try {
-            // Determina el rol según el botón seleccionado
-            const role = 'user'; // Cambia esto si necesitas manejar roles dinámicamente
             const response = await axios.post('http://localhost:5000/api/login', {
                 email,
                 password,
                 role
             });
-            alert(response.data.message);
+
+            // Redirigir según el rol
+            if (response.data.role === 'admin') {
+                navigate('/admin-dashboard'); // Redirigir al dashboard del admin
+            } else if (response.data.role === 'user') {
+                const userId = response.data.userId; // Asegúrate de devolver el userId desde el backend
+                navigate(`/user-dashboard?userId=${userId}`); // Pasar el userId como parámetro
+            }
         } catch (error) {
             alert(error.response?.data?.error || 'An error occurred');
         }
@@ -41,12 +47,24 @@ const Login = () => {
             />
             <button onClick={handleLogin} style={styles.button}>Login</button>
 
-            <h2>New User?</h2>
+            <h2>Select Role:</h2>
             <div style={styles.buttonsContainer}>
-                <button onClick={() => navigate('/register-admin')} style={styles.button}>
+                <button
+                    onClick={() => setRole('admin')}
+                    style={{
+                        ...styles.button,
+                        backgroundColor: role === 'admin' ? '#28a745' : '#007bff'
+                    }}
+                >
                     Admin
                 </button>
-                <button onClick={() => navigate('/register-user')} style={styles.button}>
+                <button
+                    onClick={() => setRole('user')}
+                    style={{
+                        ...styles.button,
+                        backgroundColor: role === 'user' ? '#28a745' : '#007bff'
+                    }}
+                >
                     User
                 </button>
             </div>

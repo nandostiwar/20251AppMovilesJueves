@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-// Define el esquema
 const adminSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    role: { type: String, default: 'admin' } // Campo para identificar el rol
 });
 
 // Hash password antes de guardar
@@ -14,6 +14,4 @@ adminSchema.pre('save', async function(next) {
     next();
 });
 
-// Define el modelo y especifica el nombre de la colección
-const Admin = mongoose.model('Admin', adminSchema, 'admins'); // El tercer argumento ('admins') fuerza el nombre de la colección
-module.exports = Admin;
+module.exports = mongoose.model('Admin', adminSchema, 'admins');

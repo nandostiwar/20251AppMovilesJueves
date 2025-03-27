@@ -31,6 +31,7 @@ router.post('/register-user', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
     const { email, password, role } = req.body;
+
     try {
         let account;
         if (role === 'admin') {
@@ -39,13 +40,22 @@ router.post('/login', async (req, res) => {
             account = await User.findOne({ email });
         }
 
-        if (!account || !(await bcrypt.compare(password, account.password))) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+        // Verifica si el usuario existe
+        if (!account) {
+            return res.status(401).json({ error: 'User not found' });
         }
 
-        res.status(200).json({ message: 'Login successful' });
+        // Verifica si la contraseña es correcta
+        const isPasswordValid = await bcrypt.compare(password, account.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Invalid password' });
+        }
+
+        // Si todo está bien, devuelve éxito y el rol
+        res.status(200).json({ message: 'Login successful', role: account.role });
     } catch (error) {
-        res.status(500).json({ error: 'Login failed' });
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'An error occurred during login' });
     }
 });
 

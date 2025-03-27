@@ -18,7 +18,7 @@ function App() {
     });
 
     useEffect(() => {
-        const userRole = authService.getRole();
+        const userRole = localStorage.getItem("role"); // Obtener rol del localStorage
         setRole(userRole);
     }, []);
 
@@ -43,7 +43,7 @@ function App() {
             <Router>
                 <Routes>
                     {/* Rutas públicas */}
-                    <Route path="/" element={<Login />} />
+                    <Route path="/" element={<Login onLogin={setRole} />} /> {/* Pasa setRole como prop */}
                     <Route path="/register-user" element={<RegisterUser />} />
                     <Route path="/register-admin" element={<RegisterAdmin />} />
 

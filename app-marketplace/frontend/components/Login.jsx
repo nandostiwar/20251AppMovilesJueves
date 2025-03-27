@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../services/authService";
 
-const Login = () => {
+const Login = ({ onLogin }) => { // Recibe una función para actualizar el rol global
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -12,7 +12,14 @@ const Login = () => {
     try {
         const data = await authService.login(correo, password);
         console.log("Login exitoso:", data);
-        
+
+        // Guardar token y rol en localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+
+        // Actualizar el rol global
+        onLogin(data.role);
+
         // Redirigir según el rol del usuario
         if (data.role === 'admin') {
             navigate("/dashboard-admin");

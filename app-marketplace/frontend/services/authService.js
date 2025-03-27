@@ -30,7 +30,7 @@ const login = async (correo, password) => {
 const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
-    window.location.href = '/';
+    window.location.href = '/'; // Redirigir al login
 };
 
 const getRole = () => {

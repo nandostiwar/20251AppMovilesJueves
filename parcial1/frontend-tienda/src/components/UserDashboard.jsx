@@ -12,7 +12,7 @@ const UserDashboard = ({ userId }) => {
 
     const fetchOrders = async () => {
         try {
-            const response = await axios.get(`/api/user-orders/${userId}`);
+            const response = await axios.get(`http://localhost:5000/api/user-orders/${userId}`);
             setOrders(response.data);
         } catch (error) {
             alert('Failed to fetch orders');
@@ -21,7 +21,7 @@ const UserDashboard = ({ userId }) => {
 
     const handleCreateOrder = async () => {
         try {
-            await axios.post('/api/create-order', { userId, product, amount });
+            await axios.post('http://localhost:5000/api/create-order', { userId, product, amount });
             alert('Order created successfully');
             fetchOrders(); // Refresh orders list
         } catch (error) {

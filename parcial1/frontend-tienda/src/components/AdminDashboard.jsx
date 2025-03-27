@@ -10,7 +10,7 @@ const AdminDashboard = () => {
 
     const fetchOrders = async () => {
         try {
-            const response = await axios.get('/api/all-orders');
+            const response = await axios.get('http://localhost:5000/api/all-orders');
             setOrders(response.data);
         } catch (error) {
             alert('Failed to fetch orders');

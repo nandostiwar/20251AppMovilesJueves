@@ -31,7 +31,7 @@ const PaymentForm = () => {
         }
 
         try {
-            await axios.post('/api/create-order', {
+            await axios.post('http://localhost:5000/api/create-order', {
                 userId: 'user-id-here', // Replace with actual user ID
                 product: formData.product,
                 amount: formData.amount

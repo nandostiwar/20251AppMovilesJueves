@@ -16,11 +16,10 @@ const Login = () => {
                 role
             });
 
-            // Redirigir según el rol
             if (response.data.role === 'admin') {
                 navigate('/admin-dashboard'); // Redirigir al dashboard del admin
             } else if (response.data.role === 'user') {
-                const userId = response.data.userId; // Asegúrate de devolver el userId desde el backend
+                const userId = response.data.userId; // Obtener el userId
                 navigate(`/user-dashboard?userId=${userId}`); // Pasar el userId como parámetro
             }
         } catch (error) {
@@ -66,6 +65,16 @@ const Login = () => {
                     }}
                 >
                     User
+                </button>
+            </div>
+
+            <h2>New User?</h2>
+            <div style={styles.buttonsContainer}>
+                <button onClick={() => navigate('/register-admin')} style={styles.button}>
+                    Register Admin
+                </button>
+                <button onClick={() => navigate('/register-user')} style={styles.button}>
+                    Register User
                 </button>
             </div>
         </div>

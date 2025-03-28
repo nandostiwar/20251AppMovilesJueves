@@ -5,6 +5,7 @@ import RegisterAdmin from './components/RegisterAdmin';
 import RegisterUser from './components/RegisterUser';
 import UserDashboard from './components/UserDashboard';
 import AdminDashboard from './components/AdminDashboard';
+import PaymentForm from './components/PaymentForm';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                     <Route path="/register-user" element={<RegisterUser />} />
                     <Route path="/user-dashboard" element={<UserDashboardWrapper />} />
                     <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                    <Route path="/payment-form" element={<PaymentForm />} />
                 </Routes>
             </div>
         </Router>

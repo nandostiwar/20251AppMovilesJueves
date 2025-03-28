@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const PaymentForm = () => {
     const [formData, setFormData] = useState({
@@ -12,6 +13,20 @@ const PaymentForm = () => {
         expirationDate: '',
         cvv: ''
     });
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const product = searchParams.get('product');
+    const amount = searchParams.get('amount');
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        setFormData((prevData) => ({
+            ...prevData,
+            product,
+            amount
+        }));
+    }, [product, amount]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,11 +47,12 @@ const PaymentForm = () => {
 
         try {
             await axios.post('http://localhost:5000/api/create-order', {
-                userId: 'user-id-here', // Replace with actual user ID
+                userId: 'user-id-here', // Reemplaza con el ID real del usuario
                 product: formData.product,
                 amount: formData.amount
             });
             alert('Payment successful');
+            navigate('/user-dashboard'); // Redirigir al dashboard del usuario
         } catch (error) {
             alert('Payment failed');
         }
@@ -50,7 +66,7 @@ const PaymentForm = () => {
                 name="product"
                 placeholder="Product"
                 value={formData.product}
-                onChange={handleChange}
+                readOnly
                 style={styles.input}
             />
             <input
@@ -58,7 +74,7 @@ const PaymentForm = () => {
                 name="amount"
                 placeholder="Amount"
                 value={formData.amount}
-                onChange={handleChange}
+                readOnly
                 style={styles.input}
             />
             <input

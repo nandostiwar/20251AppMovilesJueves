@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const UserDashboard = ({ userId }) => {
     const [product, setProduct] = useState('');
     const [amount, setAmount] = useState('');
     const [orders, setOrders] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchOrders();
@@ -29,6 +31,20 @@ const UserDashboard = ({ userId }) => {
         }
     };
 
+    const handleUpdateOrder = async (orderId) => {
+        try {
+            await axios.put(`http://localhost:5000/api/update-order/${orderId}`, { status: 'Completed' });
+            alert('Order updated successfully');
+            fetchOrders(); // Refresh orders list
+        } catch (error) {
+            alert('Failed to update order');
+        }
+    };
+
+    const handlePay = () => {
+        navigate(`/payment-form?product=${product}&amount=${amount}`);
+    };
+
     return (
         <div style={styles.container}>
             <h1>User Dashboard</h1>
@@ -46,7 +62,7 @@ const UserDashboard = ({ userId }) => {
                 onChange={(e) => setAmount(e.target.value)}
                 style={styles.input}
             />
-            <button onClick={handleCreateOrder} style={styles.button}>Pay</button>
+            <button onClick={handlePay} style={styles.button}>Pay</button>
 
             <h2>Order History</h2>
             <table style={styles.table}>
@@ -67,7 +83,14 @@ const UserDashboard = ({ userId }) => {
                                 <td>{order.product}</td>
                                 <td>${order.amount}</td>
                                 <td>{order.status}</td>
-                                <td><button style={styles.button}>Update</button></td>
+                                <td>
+                                    <button
+                                        onClick={() => handleUpdateOrder(order._id)}
+                                        style={styles.button}
+                                    >
+                                        Update
+                                    </button>
+                                </td>
                             </tr>
                         ))
                     ) : (

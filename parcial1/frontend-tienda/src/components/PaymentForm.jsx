@@ -18,6 +18,7 @@ const PaymentForm = () => {
     const searchParams = new URLSearchParams(location.search);
     const product = searchParams.get('product');
     const amount = searchParams.get('amount');
+    const userId = searchParams.get('userId'); // Leer el userId de los parámetros
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -41,20 +42,28 @@ const PaymentForm = () => {
             formData.expirationDate !== '06/28' ||
             formData.cvv !== '986'
         ) {
-            alert('Invalid payment information');
+            alert('Payment failed: Invalid payment information.');
             return;
         }
 
         try {
-            await axios.post('http://localhost:5000/api/create-order', {
-                userId: 'user-id-here', // Reemplaza con el ID real del usuario
+            // Enviar el userId junto con los datos del pedido
+            const response = await axios.post('http://localhost:5000/api/create-order', {
+                userId,
                 product: formData.product,
                 amount: formData.amount
             });
-            alert('Payment successful');
+
+            // Si todo está bien, mostrar mensaje de éxito
+            alert(response.data.message);
             navigate('/user-dashboard'); // Redirigir al dashboard del usuario
         } catch (error) {
-            alert('Payment failed');
+            // Mostrar mensajes de error específicos
+            if (error.response) {
+                alert(`Payment failed: ${error.response.data.error}`);
+            } else {
+                alert('Payment failed: Unable to connect to the server.');
+            }
         }
     };
 

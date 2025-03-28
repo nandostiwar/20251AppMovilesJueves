@@ -7,10 +7,7 @@ router.post('/create-order', async (req, res) => {
     const { userId, product, amount } = req.body;
 
     try {
-        // Validar que todos los campos requeridos estén presentes
-        if (!userId) {
-            return res.status(400).json({ error: 'User ID is missing' });
-        }
+        // Validar que los campos requeridos estén presentes
         if (!product) {
             return res.status(400).json({ error: 'Product name is missing' });
         }
@@ -19,7 +16,7 @@ router.post('/create-order', async (req, res) => {
         }
 
         // Crear el pedido
-        const order = new Order({ userId, product, amount });
+        const order = new Order({ userId, product, amount }); // userId es opcional
         await order.save();
 
         // Respuesta exitosa

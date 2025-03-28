@@ -42,6 +42,10 @@ const UserDashboard = ({ userId }) => {
     };
 
     const handlePay = () => {
+        if (!product || !amount) {
+            alert('Please enter a product and amount before paying.');
+            return;
+        }
         navigate(`/payment-form?product=${product}&amount=${amount}`);
     };
 

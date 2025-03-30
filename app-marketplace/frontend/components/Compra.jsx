@@ -97,7 +97,7 @@ const Compra = ({ onCompraExitosa, onCancelar }) => {
                     <input 
                         id="tarjeta"
                         type="text" 
-                        placeholder="9946 6854 2114 4000" 
+                        placeholder="9946 6854 2114 4001" 
                         value={tarjeta}
                         onChange={(e) => setTarjeta(e.target.value)} 
                         className="input"

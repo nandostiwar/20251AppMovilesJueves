@@ -1,10 +1,10 @@
 const express = require('express');
-const router = express.Router(); // Inicializar el router
+const router = express.Router();
 const Order = require('../models/Order');
 
 // Endpoint para crear un pedido
 router.post('/create-order', async (req, res) => {
-    const { userId, product, amount } = req.body;
+    const { userId, product, amount, status } = req.body;
 
     try {
         // Validar que los campos requeridos estén presentes
@@ -15,8 +15,8 @@ router.post('/create-order', async (req, res) => {
             return res.status(400).json({ error: 'Invalid or missing amount' });
         }
 
-        // Crear el pedido
-        const order = new Order({ userId, product, amount }); // userId es opcional
+        // Crear el pedido con el estado proporcionado (por defecto es "Pending")
+        const order = new Order({ userId, product, amount, status: status || 'Pending' });
         await order.save();
 
         // Respuesta exitosa

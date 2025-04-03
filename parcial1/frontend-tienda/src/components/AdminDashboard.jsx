@@ -17,6 +17,16 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleUpdateOrder = async (orderId, status) => {
+        try {
+            await axios.put(`http://localhost:5000/api/update-order/${orderId}`, { status });
+            alert('Order updated successfully');
+            fetchOrders(); // Refresh orders list
+        } catch (error) {
+            alert('Failed to update order');
+        }
+    };
+
     return (
         <div style={styles.container}>
             <h1>Admin Dashboard</h1>
@@ -28,18 +38,35 @@ const AdminDashboard = () => {
                         <th>Product</th>
                         <th>Amount</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {orders.map((order) => (
-                        <tr key={order._id}>
-                            <td>{new Date(order.date).toLocaleDateString()}</td>
-                            <td>{order.userId.email}</td>
-                            <td>{order.product}</td>
-                            <td>${order.amount}</td>
-                            <td>{order.status}</td>
+                    {orders.length > 0 ? (
+                        orders.map((order) => (
+                            <tr key={order._id}>
+                                <td>{new Date(order.date).toLocaleDateString()}</td>
+                                <td>{order.userId?.email || 'Unknown User'}</td>
+                                <td>{order.product}</td>
+                                <td>${order.amount}</td>
+                                <td style={{ color: order.status === 'Pending' ? 'orange' : 'green' }}>
+                                    {order.status}
+                                </td>
+                                <td>
+                                    <button
+                                        onClick={() => handleUpdateOrder(order._id, 'Approved')}
+                                        style={styles.button}
+                                    >
+                                        Approve
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="6">No orders found</td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
         </div>
@@ -55,6 +82,15 @@ const styles = {
         width: '100%',
         borderCollapse: 'collapse',
         marginTop: '20px'
+    },
+    button: {
+        padding: '10px 20px',
+        margin: '5px',
+        borderRadius: '5px',
+        border: 'none',
+        backgroundColor: '#007bff',
+        color: '#fff',
+        cursor: 'pointer'
     }
 };
 

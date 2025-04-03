@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -9,7 +9,6 @@ const PaymentForm = () => {
         name: '',
         id: '',
         phone: '',
-        userId: '', // Ahora userId es un campo más
         cardNumber: '',
         expirationDate: '',
         cvv: ''
@@ -19,10 +18,10 @@ const PaymentForm = () => {
     const searchParams = new URLSearchParams(location.search);
     const product = searchParams.get('product');
     const amount = searchParams.get('amount');
+    const userId = searchParams.get('userId'); // Leer el userId de los parámetros
     const navigate = useNavigate();
 
-    // Inicializar los valores del producto y el monto
-    useState(() => {
+    useEffect(() => {
         setFormData((prevData) => ({
             ...prevData,
             product,
@@ -48,15 +47,16 @@ const PaymentForm = () => {
         }
 
         try {
-            // Enviar los datos del pedido al backend
-            const response = await axios.post('http://localhost:5000/api/create-order', {
-                userId: formData.userId, // userId ahora es un campo más
+            // Enviar los datos del pedido al backend con estado "Approved"
+            await axios.post('http://localhost:5000/api/create-order', {
+                userId,
                 product: formData.product,
-                amount: formData.amount
+                amount: formData.amount,
+                status: 'Approved' // Marcar como aprobado
             });
 
             // Si todo está bien, mostrar mensaje de éxito
-            alert(response.data.message);
+            alert('Payment successful');
             navigate('/user-dashboard'); // Redirigir al dashboard del usuario
         } catch (error) {
             // Mostrar mensajes de error específicos
@@ -108,14 +108,6 @@ const PaymentForm = () => {
                 name="phone"
                 placeholder="Phone"
                 value={formData.phone}
-                onChange={handleChange}
-                style={styles.input}
-            />
-            <input
-                type="text"
-                name="userId"
-                placeholder="User ID (optional)"
-                value={formData.userId}
                 onChange={handleChange}
                 style={styles.input}
             />

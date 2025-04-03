@@ -31,22 +31,14 @@ const UserDashboard = ({ userId }) => {
         }
     };
 
-    const handleUpdateOrder = async (orderId) => {
+    const handleSaveOrder = async () => {
         try {
-            await axios.put(`http://localhost:5000/api/update-order/${orderId}`, { status: 'Completed' });
-            alert('Order updated successfully');
+            await axios.post('http://localhost:5000/api/create-order', { userId, product, amount, status: 'Pending' });
+            alert('Order saved as Pending');
             fetchOrders(); // Refresh orders list
         } catch (error) {
-            alert('Failed to update order');
+            alert('Failed to save order');
         }
-    };
-
-    const handlePay = () => {
-        if (!product || !amount) {
-            alert('Please enter a product and amount before paying.');
-            return;
-        }
-        navigate(`/payment-form?product=${product}&amount=${amount}`);
     };
 
     return (
@@ -66,7 +58,8 @@ const UserDashboard = ({ userId }) => {
                 onChange={(e) => setAmount(e.target.value)}
                 style={styles.input}
             />
-            <button onClick={handlePay} style={styles.button}>Pay</button>
+            <button onClick={handleSaveOrder} style={styles.button}>Save</button>
+            <button onClick={() => navigate(`/payment-form?product=${product}&amount=${amount}&userId=${userId}`)} style={styles.button}>Pay</button>
 
             <h2>Order History</h2>
             <table style={styles.table}>
@@ -76,7 +69,6 @@ const UserDashboard = ({ userId }) => {
                         <th>Product</th>
                         <th>Amount</th>
                         <th>Status</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,20 +78,14 @@ const UserDashboard = ({ userId }) => {
                                 <td>{new Date(order.date).toLocaleDateString()}</td>
                                 <td>{order.product}</td>
                                 <td>${order.amount}</td>
-                                <td>{order.status}</td>
-                                <td>
-                                    <button
-                                        onClick={() => handleUpdateOrder(order._id)}
-                                        style={styles.button}
-                                    >
-                                        Update
-                                    </button>
+                                <td style={{ color: order.status === 'Pending' ? 'orange' : 'green' }}>
+                                    {order.status}
                                 </td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="5">No orders found</td>
+                            <td colSpan="4">No orders found</td>
                         </tr>
                     )}
                 </tbody>

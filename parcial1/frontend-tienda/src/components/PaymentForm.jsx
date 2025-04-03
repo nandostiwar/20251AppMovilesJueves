@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const PaymentForm = () => {
     const [formData, setFormData] = useState({
-        product: '',
-        amount: '',
-        name: '',
-        id: '',
-        phone: '',
         cardNumber: '',
         expirationDate: '',
         cvv: ''
@@ -16,18 +11,9 @@ const PaymentForm = () => {
 
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    const product = searchParams.get('product');
-    const amount = searchParams.get('amount');
-    const userId = searchParams.get('userId'); // Leer el userId de los parámetros
+    const orderId = searchParams.get('orderId'); // Obtener el ID del pedido
+    const userId = searchParams.get('userId'); // Obtener el ID del usuario
     const navigate = useNavigate();
-
-    useEffect(() => {
-        setFormData((prevData) => ({
-            ...prevData,
-            product,
-            amount
-        }));
-    }, [product, amount]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,17 +33,12 @@ const PaymentForm = () => {
         }
 
         try {
-            // Enviar los datos del pedido al backend con estado "Approved"
-            await axios.post('http://localhost:5000/api/create-order', {
-                userId,
-                product: formData.product,
-                amount: formData.amount,
-                status: 'Approved' // Marcar como aprobado
-            });
+            // Actualizar el estado del pedido a "Approved"
+            await axios.put(`http://localhost:5000/api/update-order/${orderId}`, { status: 'Approved' });
 
             // Si todo está bien, mostrar mensaje de éxito
-            alert('Payment successful');
-            navigate('/user-dashboard'); // Redirigir al dashboard del usuario
+            alert('Payment successful. Order approved.');
+            navigate(`/user-dashboard?userId=${userId}`); // Redirigir al dashboard del usuario con el userId
         } catch (error) {
             // Mostrar mensajes de error específicos
             if (error.response) {
@@ -71,46 +52,6 @@ const PaymentForm = () => {
     return (
         <form onSubmit={handleSubmit} style={styles.container}>
             <h1>Payment Form</h1>
-            <input
-                type="text"
-                name="product"
-                placeholder="Product"
-                value={formData.product}
-                readOnly
-                style={styles.input}
-            />
-            <input
-                type="number"
-                name="amount"
-                placeholder="Amount"
-                value={formData.amount}
-                readOnly
-                style={styles.input}
-            />
-            <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={formData.name}
-                onChange={handleChange}
-                style={styles.input}
-            />
-            <input
-                type="text"
-                name="id"
-                placeholder="ID"
-                value={formData.id}
-                onChange={handleChange}
-                style={styles.input}
-            />
-            <input
-                type="text"
-                name="phone"
-                placeholder="Phone"
-                value={formData.phone}
-                onChange={handleChange}
-                style={styles.input}
-            />
             <input
                 type="text"
                 name="cardNumber"

@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const UserDashboard = ({ userId }) => {
+const UserDashboard = () => {
     const [product, setProduct] = useState('');
     const [amount, setAmount] = useState('');
     const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Leer el userId de los parámetros de la URL
+    const searchParams = new URLSearchParams(location.search);
+    const userId = searchParams.get('userId');
 
     useEffect(() => {
-        fetchOrders();
-    }, []);
+        if (!userId) {
+            alert('User ID is missing. Please log in again.');
+            navigate('/');
+        } else {
+            fetchOrders();
+        }
+    }, [userId, navigate]);
 
     const fetchOrders = async () => {
         try {
@@ -41,6 +51,10 @@ const UserDashboard = ({ userId }) => {
         }
     };
 
+    const handleApproveOrder = (orderId) => {
+        navigate(`/payment-form?orderId=${orderId}&userId=${userId}`); // Pasar userId al formulario de pago
+    };
+
     return (
         <div style={styles.container}>
             <h1>User Dashboard</h1>
@@ -59,7 +73,7 @@ const UserDashboard = ({ userId }) => {
                 style={styles.input}
             />
             <button onClick={handleSaveOrder} style={styles.button}>Save</button>
-            <button onClick={() => navigate(`/payment-form?product=${product}&amount=${amount}&userId=${userId}`)} style={styles.button}>Pay</button>
+
 
             <h2>Order History</h2>
             <table style={styles.table}>
@@ -69,6 +83,7 @@ const UserDashboard = ({ userId }) => {
                         <th>Product</th>
                         <th>Amount</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,11 +96,19 @@ const UserDashboard = ({ userId }) => {
                                 <td style={{ color: order.status === 'Pending' ? 'orange' : 'green' }}>
                                     {order.status}
                                 </td>
+                                <td>
+                                    <button
+                                        onClick={() => handleApproveOrder(order._id)}
+                                        style={styles.button}
+                                    >
+                                        Approve
+                                    </button>
+                                </td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="4">No orders found</td>
+                            <td colSpan="5">No orders found</td>
                         </tr>
                     )}
                 </tbody>

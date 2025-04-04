@@ -10,7 +10,11 @@ app.use(json());
 app.use(cors());
 
 app.use('/v1/calculadora', router);
-
+app.get('/', (req, res) => {
+    res.json({ 
+      message: 'Hello World',
+    });
+  });
 app.listen(3500, ()=>{
     console.log("Listening at port 3500");
 })

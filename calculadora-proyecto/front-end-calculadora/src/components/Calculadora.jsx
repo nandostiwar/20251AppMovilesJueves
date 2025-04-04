@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Resultado from "./Resultado";
 import '../styles/Calculadora.css'
 import Resultado from "./Resultado";
 

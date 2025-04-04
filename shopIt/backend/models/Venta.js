@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { verifyToken } = require('../middleware/authMiddleware');
 
 const ventaSchema = new mongoose.Schema({
   usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

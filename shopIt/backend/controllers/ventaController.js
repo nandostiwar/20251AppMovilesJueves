@@ -1,7 +1,7 @@
 const Venta = require('../models/Venta');
 
 // Crear una nueva venta
-exports.newVenta = async (req, res) => {
+const newVenta = async (req, res) => {
   const { producto, valor } = req.body;
   const usuario = req.user.id;
 
@@ -20,7 +20,7 @@ exports.newVenta = async (req, res) => {
 };
 
 // Obtener el historial de ventas del usuario autenticado
-exports.getVentas = async (req, res) => {
+const getVentas = async (req, res) => {
   try {
     const ventas = await Venta.find({ usuario: req.user.id }).populate('usuario', 'email');
     res.status(200).json(ventas);
@@ -31,7 +31,7 @@ exports.getVentas = async (req, res) => {
 };
 
 // Obtener todas las ventas (solo administradores)
-exports.getAllVentas = async (req, res) => {
+const getAllVentas = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Acceso denegado. Solo los administradores pueden acceder a esta información.' });
@@ -43,4 +43,10 @@ exports.getAllVentas = async (req, res) => {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener las ventas' });
   }
+};
+
+module.exports = {
+  newVenta,
+  getVentas,
+  getAllVentas,
 };

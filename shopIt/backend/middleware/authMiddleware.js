@@ -1,18 +1,23 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-exports.authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+const auth = async (req, res, next) => {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
-    return res.status(401).json({ error: 'Acceso denegado. Token no proporcionado.' });
+    return res.status(401).json({ error: 'Token no proporcionado' });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: 'Token inválido.' });
-    }
-    req.user = user; // Agrega el usuario al objeto de solicitud
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(401).json({ error: 'Usuario no encontrado' });
+
+    req.user = { id: user._id, role: user.role };
     next();
-  });
+  } catch (error) {
+    res.status(401).json({ error: 'Token inválido' });
+  }
 };
+
+module.exports = auth; // 👈 importante: exportar como función directa

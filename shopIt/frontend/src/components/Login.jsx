@@ -9,10 +9,14 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/user/login', { email, password });
+      const response = await axios.post('http://localhost:5000/api/user/login', { 
+        email, 
+        password 
+      });
+      
       localStorage.setItem('token', response.data.token);
-      const userRole = response.data.role;
-      if (userRole === 'admin') {
+      
+      if (response.data.role === 'admin') {
         navigate('/admin-dashboard');
       } else {
         navigate('/user-dashboard');

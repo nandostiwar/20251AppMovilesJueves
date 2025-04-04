@@ -11,6 +11,11 @@ const UserDashboard = () => {
       try {
         const token = localStorage.getItem('token');
 
+        if (!token) {
+          navigate('/');
+          return;
+        }
+
         // Obtener el historial de compras del usuario autenticado
         const response = await axios.get('http://localhost:5000/api/venta', {
           headers: { Authorization: `Bearer ${token}` },
@@ -25,9 +30,32 @@ const UserDashboard = () => {
     fetchCompras();
   }, [navigate]);
 
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Elimina el token
+    navigate('/'); // Redirige al login
+  };
+
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>
       <h2>Panel de Usuario</h2>
+
+      {/* Botón de Salir */}
+      <button 
+        onClick={handleLogout} 
+        style={{ 
+          position: 'absolute', 
+          top: '20px', 
+          right: '20px', 
+          padding: '10px 15px', 
+          backgroundColor: 'red', 
+          color: 'white', 
+          border: 'none', 
+          borderRadius: '5px', 
+          cursor: 'pointer'
+        }}
+      >
+        Salir
+      </button>
 
       {/* Cuadro con el historial de compras */}
       <div style={{

@@ -1,60 +1,130 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+"use client"
 
-const AdminDashboard = () => {
-  const [ventas, setVentas] = useState([]);
+import { useState, useEffect } from "react"
+import axios from "axios"
+
+const PanelAdministrador = () => {
+  const [ventas, setVentas] = useState([])
+  const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    const fetchSales = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/ventas/all', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setVentas(response.data);
-      } catch (error) {
-        console.error('Error fetching sales:', error);
-      }
-    };
+    obtenerVentas()
+  }, [])
 
-    fetchSales();
-  }, []);
+  const obtenerVentas = async () => {
+    try {
+      setCargando(true)
+      const token = localStorage.getItem("authToken") || localStorage.getItem("token")
+
+      if (!token) {
+        setError("No se encontró un token de autenticación. Redirigiendo al inicio de sesión...")
+        setTimeout(() => {
+          window.location.href = "/login"
+        }, 2000)
+        return
+      }
+
+      const respuesta = await axios.get("http://localhost:5000/api/venta/all", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      setVentas(respuesta.data)
+      setError(null)
+    } catch (error) {
+      console.error("Error al obtener ventas:", error)
+
+      if (error.response) {
+        if (error.response.status === 401) {
+          setError("La sesión ha expirado. Redirigiendo al inicio de sesión...")
+          setTimeout(() => {
+            localStorage.removeItem("authToken")
+            window.location.href = "/login"
+          }, 2000)
+        } else {
+          setError(`Error del servidor: ${error.response.data.message || "Ocurrió un problema"}`)
+        }
+      } else if (error.request) {
+        setError("No hay respuesta del servidor. Verifica tu conexión.")
+      } else {
+        setError(error.message)
+      }
+    } finally {
+      setCargando(false)
+    }
+  }
+
+  const cerrarSesion = () => {
+    localStorage.removeItem("authToken")
+    window.location.href = "/login"
+  }
+
+  const formatearFecha = (fechaISO) => {
+    const fecha = new Date(fechaISO)
+    return fecha.toLocaleDateString("es-CO", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
+
+  if (cargando) {
+    return <div>Cargando datos de ventas...</div>
+  }
+
+  if (error) {
+    return (
+      <div className="contenedor-error">
+        <h3>Error</h3>
+        <p>{error}</p>
+        {error.includes("sesión") && (
+          <button onClick={cerrarSesion}>Volver al inicio de sesión</button>
+        )}
+      </div>
+    )
+  }
 
   return (
-    <div>
-      <h2>Panel de Administrador</h2>
-      <table border="1" style={{ width: '100%', marginTop: '20px' }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Usuario</th>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Total</th>
-            <th>Fecha</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ventas.length > 0 ? (
-            ventas.map((venta) => (
-              <tr key={venta._id}>
-                <td>{venta._id}</td>
-                <td>{venta.user?.email || 'Desconocido'}</td>
-                <td>{venta.producto}</td>
-                <td>{venta.cantidad}</td>
-                <td>${venta.total}</td>
-                <td>{new Date(venta.fecha).toLocaleString()}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="6" style={{ textAlign: 'center' }}>No hay ventas disponibles</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
-};
+    <div className="panel-administrador">
+      <h2>Panel de Ventas</h2>
 
-export default AdminDashboard;
+      <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
+        <button onClick={obtenerVentas}>Actualizar Datos de Ventas</button>
+        <button onClick={cerrarSesion}>Salir al inicio</button>
+      </div>
+
+      {ventas.length === 0 ? (
+        <p>No hay datos de ventas disponibles.</p>
+      ) : (
+        <div className="lista-ventas">
+          <table border="1" cellPadding="8" cellSpacing="0">
+            <thead>
+              <tr>
+                <th>ID Venta</th>
+                <th>Monto</th>
+                <th>Usuario</th>
+                <th>Fecha</th> {/* ✅ Nueva columna */}
+              </tr>
+            </thead>
+            <tbody>
+              {ventas.map((venta) => (
+                <tr key={venta.id || venta._id}>
+                  <td>{venta.id || venta._id}</td>
+                  <td>${venta.monto || "0.00"}</td>
+                  <td>{venta.usuario?.nombre || "Desconocido"}</td>
+                  <td>{formatearFecha(venta.fecha || venta.createdAt)}</td> {/* ✅ Mostrar fecha */}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default PanelAdministrador

@@ -105,18 +105,26 @@ const PanelAdministrador = () => {
             <thead>
               <tr>
                 <th>ID Venta</th>
+                <th>Producto</th>
                 <th>Monto</th>
+                <th>Estado</th>
                 <th>Usuario</th>
-                <th>Fecha</th> {/* ✅ Nueva columna */}
+                <th>Fecha</th>
               </tr>
             </thead>
             <tbody>
               {ventas.map((venta) => (
                 <tr key={venta.id || venta._id}>
                   <td>{venta.id || venta._id}</td>
-                  <td>${venta.monto || "0.00"}</td>
-                  <td>{venta.usuario?.nombre || "Desconocido"}</td>
-                  <td>{formatearFecha(venta.fecha || venta.createdAt)}</td> {/* ✅ Mostrar fecha */}
+                  <td>{venta.producto || "N/A"}</td>
+                  <td>${venta.valor || venta.monto || "0.00"}</td>
+                  <td>{venta.estado || "pendiente"}</td>
+                  <td>
+                    {venta.usuario
+                      ? `${venta.usuario.nombre || "Usuario"} (${venta.usuario.email})`
+                      : "Desconocido"}
+                  </td>
+                  <td>{formatearFecha(venta.fecha || venta.createdAt)}</td>
                 </tr>
               ))}
             </tbody>

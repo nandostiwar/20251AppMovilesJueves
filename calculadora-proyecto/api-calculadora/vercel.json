@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "https://mi-api-en-render.com/api/$1"
+      }
+    ]
+  }
+  

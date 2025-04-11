@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/ventas';
+const API_URL = 'https://parcial-backend-theta.vercel.app/api/ventas';
 
 const getMisCompras = async () => {
     const token = localStorage.getItem('token');

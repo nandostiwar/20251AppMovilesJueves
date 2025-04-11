@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/auth';
+const API_URL = 'https://parcial-backend-theta.vercel.app/api/auth';
 
 const registerUser = async (correo, password) => {
     return axios.post(`${API_URL}/register`, { correo, password, role: 'user' });

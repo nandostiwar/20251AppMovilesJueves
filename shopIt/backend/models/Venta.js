@@ -6,7 +6,7 @@ const ventaSchema = new mongoose.Schema({
   producto: { type: String, required: true },
   valor: { type: Number, required: true },
   fecha: { type: Date, default: Date.now },
-  estado: { type: String, enum: ['aceptada', 'rechazada'], default: 'aceptada' }
+  estado: { type: String, enum: ['pendiente', 'aceptada', 'rechazada'], default: 'pendiente' }
 });
 
 module.exports = mongoose.model('Venta', ventaSchema);
